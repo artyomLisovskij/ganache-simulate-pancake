@@ -46,7 +46,26 @@ async function buyToken(targetAccount, amount, tokenAddress) {
         targetAccount.address,
         web3.utils.toHex(Math.round(Date.now()/1000)+60*20),
     );
-
+    
+    let minABI = [
+        // balanceOf
+        {
+            "constant":true,
+            "inputs":[{"name":"_owner","type":"address"}],
+            "name":"balanceOf",
+            "outputs":[{"name":"balance","type":"uint256"}],
+            "type":"function"
+        },
+        // decimals
+        {
+            "constant":true,
+            "inputs":[],
+            "name":"decimals",
+            "outputs":[{"name":"","type":"uint8"}],
+            "type":"function"
+        }
+    ];
+    let tokenContract = new web3.eth.Contract(minABI,tokenAddress);
     var count = await web3.eth.getTransactionCount(targetAccount.address);
     var rawTransaction = {
         "from":targetAccount.address,
@@ -60,9 +79,13 @@ async function buyToken(targetAccount, amount, tokenAddress) {
 
     var transaction = new Tx(rawTransaction, {common: chain});
     transaction.sign(privateKey);
-
+    let balance = await tokenContract.methods.balanceOf(targetAccount.address).call();
+    console.log('was:', web3.utils.fromWei(balance, 'ether') );
     var result = await web3.eth.sendSignedTransaction('0x' + transaction.serialize().toString('hex'));
-    console.log(result);
-    console.log(web3.utils.fromWei(web3.utils.hexToNumberString(result.logs[2].data), 'ether'))
+    //console.log(result);
+    // console.log(web3.utils.fromWei(web3.utils.hexToNumberString(result.logs[2].data), 'ether'));
+    let balance2 = await tokenContract.methods.balanceOf(targetAccount.address).call();
+    console.log('became', web3.utils.fromWei(balance, 'ether'));
+    console.log('diff', balance2-balance);
     return result;
 }
