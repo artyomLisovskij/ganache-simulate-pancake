@@ -1,0 +1,17 @@
+{
+  "name": "ganache-simulate",
+  "version": "1.0.0",
+  "description": "npx ganache-cli --fork https://bsc-dataseed.binance.org -u 0x10ed43c718714eb63d5aa57b78b54704e256024e\r npx run index.js",
+  "main": "index.js",
+  "dependencies": {
+    "ethereumjs-tx": "^2.1.2",
+    "ganache-cli": "^6.12.2",
+    "web3": "^1.5.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
